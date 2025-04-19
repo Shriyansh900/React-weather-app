@@ -1,11 +1,14 @@
 import React, { useState } from "react";
+import lodingGif from './assets/Loading Rings.gif'
 
 const App = () => {
   const [City, setCity] = useState("");
   const [wDetails, setWdetails] = useState();
   const [darkMode, setDarkMode] = useState(false);
+  let [isLoding,setIsLoding]=useState(false)
 
   const getData = (e) => {
+    setIsLoding(true)
     e.preventDefault();
     fetch(
       `https://api.openweathermap.org/data/2.5/weather?q=${City}&appid=751d66e130befad396405dc13796a57c&units=metric`
@@ -16,8 +19,8 @@ const App = () => {
           setWdetails(undefined);
         } else {
           setWdetails(finalRes);
-          console.log(finalRes);
         }
+        setIsLoding(false)
       });
     setCity("");
   };
@@ -61,9 +64,13 @@ const App = () => {
           </button>
         </form>
 
+        <div className="flex justify-center">
+        <img src={lodingGif} style={{ width: "150px", height:"150px" }} className={isLoding ? "" : "hidden"}/>
+        </div>
+
         {wDetails !== undefined ? (
           <>
-            <div className="bg-blue-100 dark:bg-gray-700 rounded-lg p-4 text-center">
+            <div className=" bg-gray-800 dark:text-white  rounded-lg p-4 text-center">
               <h2 className="text-xl font-semibold">
                 {wDetails.name}, {wDetails.sys.country}
               </h2>
@@ -95,7 +102,7 @@ const App = () => {
             </div>
           </>
         ) : (
-          <div className="text-center text-gray-500">No Data</div>
+          <div className="text-center text-gray-500">No Data Found</div>
         )}
       </div>
     </div>
